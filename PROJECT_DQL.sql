@@ -1,0 +1,109 @@
+
+-- 1.Retrieve All Data from a Table
+SELECT * FROM DEPARTMENTS;  
+SELECT * FROM DOCTORS;
+
+-- 2.Select the FIRST_NAME, LAST_NAME, and PHONE_NUMBER of all patients who are from the state of Telangana from the PATIENTS table.
+DESC PATIENTS;
+SELECT LOCATION FROM PATIENTS;
+SELECT FIRST_NAME,LAST_NAME,PHONE_NUMBER,LOCATION FROM PATIENTS WHERE RIGHT(LOCATION,9) = "TELANGANA";
+
+-- 3. Retrieve all records from the APPOINTMENTS table where the APP_DATETIME is between 2025-04-01 and 2025-04-20.
+DESC APPOINTMENTS;
+SELECT * FROM APPOINTMENTS;
+SELECT * FROM APPOINTMENTS WHERE DATE(APP_DATETIME) BETWEEN '2025-04-01' AND '2025-04-20';
+
+-- 4.Select the FIRST_NAME and LAST_NAME of all doctors who belong to the departments with DEPT_ID 1, 2, or 3 from the DOCTORS table.
+DESC DOCTORS;
+SELECT FIRST_NAME,LAST_NAME,DEPT_ID FROM DOCTORS WHERE DEPT_ID IN (1,2,3);
+
+-- 5.Retrieve all the records from the BILLS table where the PAID_AMOUNT is NULL.
+SELECT * FROM BILLS WHERE PAID_AMOUNT IS NULL;
+
+-- 6.Select all the records from the STAFF table where the FIRST_NAME starts with the letter "A".
+SELECT * FROM STAFF WHERE FIRST_NAME LIKE 'A%';
+
+-- 7.Retrieve the top 5 most recent appointments (APP_DATETIME) from the APPOINTMENTS table.
+SELECT * FROM APPOINTMENTS ORDER BY APP_DATETIME LIMIT 5;
+
+-- 8.Retrieve the first 5 records from the BILLS table, sorted by the TOTAL_AMOUNT in descending order.
+SELECT * FROM BILLS ORDER BY TOTAL_AMOUNT LIMIT 5 OFFSET 2;
+
+-- 9. Retrieve all patients who are from Andhra Pradesh and whose GENDER is Female from the PATIENTS table.
+DESC PATIENTS;
+SELECT * FROM PATIENTS WHERE RIGHT(LOCATION,9)="TELANGANA" AND GENDER="FEMALE";
+
+-- 10.Retrieve all appointments where the DOCTOR_ID is 2 or the PATIENT_ID is 5.
+DESC APPOINTMENTS;
+SELECT * FROM APPOINTMENTS;
+SELECT * FROM APPOINTMENTS WHERE DOCTOR_ID=2 OR PATIENT_ID = 5;
+
+-- 11. Retrieve all records from the STAFF table where the ROLE is not Nurse and the HIRE_DATE is after 2020-01-01.
+SELECT * FROM STAFF;
+SELECT * FROM STAFF WHERE ROLE != 'NURSE' AND HIRE_DATE>'2020-01-01';
+
+-- 12. Retrieve all BILLS records where the TOTAL_AMOUNT is between 1000 and 2000, the TESTING_CHARGES is  0.
+SELECT * FROM BILLS WHERE TOTAL_AMOUNT BETWEEN 1000 AND 2000 AND TESTING_CHARGES=0;
+
+
+-- GROUPING
+
+-- 13.Count how many appointments each doctor has, and sort the result in descending order of appointment count.
+SELECT * FROM APPOINTMENTS;
+SELECT DOCTOR_ID,COUNT(APPOINTMENT_ID) AS TOTAL_APPOINTMENTS FROM APPOINTMENTS GROUP BY DOCTOR_ID ORDER BY TOTAL_APPOINTMENTS DESC;
+
+-- 14. Find the average experience of doctors grouped by department.
+SELECT * FROM DOCTORS;
+SELECT DEPT_ID,AVG(EXPERIENCE)  FROM DOCTORS GROUP BY DEPT_ID;
+
+-- 15. FIND THE TEST WHICH IS CONDUCTED FOR ABOVE 7 TIMES
+SELECT TEST_TYPE,COUNT(TEST_ID) FROM TESTS GROUP BY TEST_TYPE HAVING COUNT(TEST_ID) >7;
+
+-- JOINS
+
+
+-- 16.	List all departments where the total number of appointments handled by their doctors is more than 6.
+SELECT  DE.DEPT_NAME,COUNT(A.APPOINTMENT_ID) FROM APPOINTMENTS A
+JOIN DOCTORS D ON D.DOCTOR_ID=A.DOCTOR_ID
+JOIN DEPARTMENTS DE ON D.DEPT_ID=DE.DEPT_ID
+GROUP BY DE.DEPT_NAME HAVING COUNT(A.APPOINTMENT_ID)>6 ;
+
+-- 17. Calculate the total revenue generated (TOTAL_AMOUNT) per department.
+SELECT DE.DEPT_NAME,SUM(TOTAL_AMOUNT) FROM BILLS B 
+JOIN APPOINTMENTS A ON B.APPOINTMENT_ID=A.APPOINTMENT_ID
+JOIN DOCTORS D ON A.DOCTOR_ID=D.DOCTOR_ID
+JOIN DEPARTMENTS DE ON D.DEPT_ID=DE.DEPT_ID
+GROUP BY DE.DEPT_NAME ORDER BY SUM(TOTAL_AMOUNT) DESC;
+
+-- 18.For each patient, show their total number of appointments and total amount billed. Filter only patients with more than 1 appointments.
+SELECT P.PATIENT_ID,COUNT(A.APPOINTMENT_ID),SUM(TOTAL_AMOUNT) FROM BILLS B
+JOIN APPOINTMENTS A ON B.APPOINTMENT_ID=A.APPOINTMENT_ID
+JOIN PATIENTS P ON P.PATIENT_ID =A.PATIENT_ID
+GROUP BY P.PATIENT_ID HAVING COUNT(A.APPOINTMENT_ID)>1;
+
+
+-- 19.Group appointments by date and count how many appointments happened per day. Show only those days where more than 5 appointments occurred.
+SELECT DATE(APP_DATETIME) ,COUNT(APPOINTMENT_ID) FROM APPOINTMENTS GROUP BY DATE(APP_DATETIME);
+
+-- 20.For each diagnosis type in MEDICAL_RECORDS, show how many times it occurred and the average TOTAL_AMOUNT of bills associated with it.
+SELECT R.DIAGNOSIS,COUNT(RECORD_ID) AS NO_OF_TIMES,AVG(B.TOTAL_AMOUNT)  FROM MEDICAL_RECORDS R
+JOIN BILLS B ON R.APPOINTMENT_ID=B.APPOINTMENT_ID
+GROUP BY R.DIAGNOSIS;
+
+
+-- SUBQUERIES
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+ 
+
